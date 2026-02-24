@@ -1,4 +1,4 @@
-package com.blockchain;
+package com.blockchain.utils;
 
 /**
  * Constantes e configurações do protocolo de rede blockchain
@@ -18,7 +18,7 @@ package com.blockchain;
  * - Não permitir saldo negativo em nenhuma hipótese
  * - Somente valores positivos nas transações
  */
-public class Protocol {
+public class ProtocolUtil {
     
     // TIPOS DE MENSAGENS (Protocolo de Comunicação)
     public static final String NEW_TRANSACTION = "NEW_TRANSACTION";  // Envio de uma nova transação
@@ -32,7 +32,7 @@ public class Protocol {
     public static final String DIFFICULTY = "000";     // Dificuldade fixa do Proof of Work (3 zeros)
     
     // Impedir instanciação
-    private Protocol() {
+    private ProtocolUtil() {
         throw new UnsupportedOperationException("Utility class");
     }
 }

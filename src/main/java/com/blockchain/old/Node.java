@@ -1,4 +1,4 @@
-package com.blockchain;
+package com.blockchain.old;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,6 +18,8 @@ import java.util.concurrent.Executors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.blockchain.utils.ProtocolUtil;
 
 /**
  * Nó da rede blockchain P2P
@@ -83,7 +85,7 @@ public class Node {
     private void handleConnection(Socket socket) {
         try (socket) {
             InputStream input = socket.getInputStream();
-            byte[] buffer = new byte[Protocol.BUFFER_SIZE];
+            byte[] buffer = new byte[ProtocolUtil.BUFFER_SIZE];
             int bytesRead = input.read(buffer);
 
             if (bytesRead > 0) {
@@ -104,10 +106,10 @@ public class Node {
     private void handleMessage(Message message) {
         try {
             switch (message.getType()) {
-                case Protocol.NEW_TRANSACTION -> handleNewTransaction(message);
-                case Protocol.NEW_BLOCK -> handleNewBlock(message);
-                case Protocol.REQUEST_CHAIN -> handleRequestChain(message);
-                case Protocol.RESPONSE_CHAIN -> handleResponseChain(message);
+                case ProtocolUtil.NEW_TRANSACTION -> handleNewTransaction(message);
+                case ProtocolUtil.NEW_BLOCK -> handleNewBlock(message);
+                case ProtocolUtil.REQUEST_CHAIN -> handleRequestChain(message);
+                case ProtocolUtil.RESPONSE_CHAIN -> handleResponseChain(message);
                 default -> logger.warn("Tipo de mensagem desconhecido: {}", message.getType());
             }
 

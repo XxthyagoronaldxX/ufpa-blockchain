@@ -1,4 +1,4 @@
-package com.blockchain;
+package com.blockchain.old;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.blockchain.utils.ProtocolUtil;
 
 /**
  * Gerencia a blockchain completa e o pool de transações pendentes
@@ -25,7 +27,7 @@ public class Blockchain {
     public Blockchain() {
         this.chain = new ArrayList<>();
         this.pendingTransactions = new ArrayList<>();
-        this.difficulty = Protocol.DIFFICULTY;
+        this.difficulty = ProtocolUtil.DIFFICULTY;
 
         // Cria o bloco gênesis
         createGenesisBlock();
