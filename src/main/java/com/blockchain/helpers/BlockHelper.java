@@ -28,6 +28,7 @@ public class BlockHelper {
             hash = calculateHash(block);
         }
 
+        block.setHash(hash);
         log.debug("Bloco minerado: {}", hash);
     }
 }
