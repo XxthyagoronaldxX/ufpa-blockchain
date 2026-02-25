@@ -22,8 +22,8 @@ public class MessageFactory {
         String sender = senderHost + ":" + senderPort;
 
         PayloadPojo payload = PayloadPojo.builder()
-            .transaction(transaction)
-            .build();
+                .transaction(transaction)
+                .build();
 
         return MessagePojo.builder()
                 .type(ProtocolUtil.NEW_TRANSACTION)
@@ -40,8 +40,8 @@ public class MessageFactory {
         String sender = senderHost + ":" + senderPort;
 
         PayloadPojo payload = PayloadPojo.builder()
-            .block(block)
-            .build();
+                .block(block)
+                .build();
 
         return MessagePojo.builder()
                 .type(ProtocolUtil.NEW_BLOCK)
@@ -72,8 +72,8 @@ public class MessageFactory {
         String sender = senderHost + ":" + senderPort;
 
         PayloadPojo payload = PayloadPojo.builder()
-            .blockchain(blockchain)
-            .build();
+                .blockchain(blockchain)
+                .build();
 
         return MessagePojo.builder()
                 .type(ProtocolUtil.RESPONSE_CHAIN)

@@ -106,7 +106,6 @@ public class BlockchainHelper {
 
     /**
      * Verifica se toda a blockchain é válida
-     * Equivalente ao is_chain_valid do Python
      */
     public static boolean isChainValid(BlockchainPojo blockchainPojo) {
         List<BlockPojo> chain = blockchainPojo.getChain();

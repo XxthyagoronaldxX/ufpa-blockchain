@@ -1,8 +1,5 @@
 package com.blockchain.helpers;
 
-import java.util.Map;
-
-import com.blockchain.factories.TransactionFactory;
 import com.blockchain.pojos.BlockPojo;
 import com.blockchain.pojos.BlockchainPojo;
 import com.blockchain.pojos.MessagePojo;
@@ -10,7 +7,6 @@ import com.blockchain.pojos.PayloadPojo;
 import com.blockchain.pojos.TransactionPojo;
 import com.blockchain.utils.ProtocolUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class MessageHelper {
@@ -32,10 +28,9 @@ public class MessageHelper {
             throw new IllegalStateException("Tipo de mensagem não é NEW_TRANSACTION");
         }
 
-        Map<String, Object> map = mapper.convertValue(message.getPayload(), new TypeReference<Map<String, Object>>() {
-        });
+        PayloadPojo payloadPojo = mapper.convertValue(message.getPayload(), PayloadPojo.class);
 
-        return TransactionFactory.fromMap(map);
+        return payloadPojo.getTransaction();
     }
 
     public static BlockPojo getBlock(MessagePojo message) {
