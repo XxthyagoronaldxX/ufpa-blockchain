@@ -3,6 +3,7 @@ package com.blockchain.pojos;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.blockchain.factories.BlockFactory;
 import com.blockchain.helpers.BlockHelper;
 import com.blockchain.helpers.BlockchainHelper;
 import com.blockchain.utils.ProtocolUtil;
@@ -30,18 +31,9 @@ public class BlockchainPojo {
         this.pendingTransactions = new ArrayList<>();
         this.difficulty = ProtocolUtil.DIFFICULTY;
 
-        createGenesisBlock();
-    }
+        BlockPojo genesis = BlockFactory.createGenesisBlock();
 
-    /**
-     * Cria o primeiro bloco da blockchain (Bloco Gênesis fixo)
-     */
-    private void createGenesisBlock() {
-        List<TransactionPojo> genesisTransactions = new ArrayList<>();
-
-        BlockPojo genesis = new BlockPojo(0, genesisTransactions, "0");
-        BlockHelper.mineBlock(genesis, difficulty);
-        chain.add(genesis);
+        this.chain.add(genesis);
 
         log.info("Bloco Gênesis criado: {}", genesis.getHash());
     }

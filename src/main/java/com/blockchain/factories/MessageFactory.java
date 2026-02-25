@@ -24,7 +24,7 @@ public class MessageFactory {
                 .type(ProtocolUtil.NEW_TRANSACTION)
                 .payload(transaction)
                 .sender(sender)
-                .timestamp(System.currentTimeMillis())
+                .timestamp(System.currentTimeMillis() / 1000.0)
                 .build();
     }
 
@@ -38,7 +38,7 @@ public class MessageFactory {
                 .type(ProtocolUtil.NEW_BLOCK)
                 .payload(block)
                 .sender(sender)
-                .timestamp(System.currentTimeMillis())
+                .timestamp(System.currentTimeMillis() / 1000.0)
                 .build();
     }
 
@@ -52,7 +52,7 @@ public class MessageFactory {
                 .type(ProtocolUtil.REQUEST_CHAIN)
                 .payload(null)
                 .sender(sender)
-                .timestamp(System.currentTimeMillis())
+                .timestamp(System.currentTimeMillis() / 1000.0)
                 .build();
     }
 
@@ -66,7 +66,7 @@ public class MessageFactory {
                 .type(ProtocolUtil.RESPONSE_CHAIN)
                 .payload(blockchain)
                 .sender(sender)
-                .timestamp(System.currentTimeMillis())
+                .timestamp(System.currentTimeMillis() / 1000.0)
                 .build();
     }
 

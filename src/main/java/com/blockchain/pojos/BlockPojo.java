@@ -1,6 +1,9 @@
 package com.blockchain.pojos;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,7 +24,7 @@ import lombok.ToString;
 public class BlockPojo {
     private int index;
 
-    private long timestamp;
+    private double timestamp;
 
     private List<TransactionPojo> transactions;
 
@@ -34,14 +37,31 @@ public class BlockPojo {
 
     public BlockPojo(int index, List<TransactionPojo> transactions, String previousHash) {
         this.index = index;
-        this.timestamp = System.currentTimeMillis();
+        this.timestamp = System.currentTimeMillis() / 1000.0; // Converte ms para segundos
         this.transactions = new ArrayList<>(transactions);
         this.previousHash = previousHash;
         this.nonce = 0;
         this.hash = "";
     }
 
-    public String getTransactionsToString() {
+    public List<Map<String, Object>> transactionsToMap() {
+        List<Map<String, Object>> mapList = new ArrayList<>();
+
+        for (int i = 0; i < transactions.size(); i++) {
+            TransactionPojo t = transactions.get(i);
+            Map<String, Object> map = new LinkedHashMap<>();
+            map.put("destino", t.getDestino());
+            map.put("id", t.getId());
+            map.put("origem", t.getOrigem());
+            map.put("timestamp", BigDecimal.valueOf(t.getTimestamp()));
+            map.put("valor", BigDecimal.valueOf(t.getValor()));
+            mapList.add(map);
+        }
+
+        return mapList;
+    }
+
+    public String transactionsToString() {
         return transactions.stream()
                 .map(t -> t.getOrigem() + t.getDestino() + t.getValor() + t.getTimestamp())
                 .collect(Collectors.joining());

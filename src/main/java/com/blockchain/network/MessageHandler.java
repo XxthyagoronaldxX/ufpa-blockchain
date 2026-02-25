@@ -22,20 +22,20 @@ public class MessageHandler {
      */
     public static void handleMessage(NodePojo node, MessagePojo message) {
         try {
-            switch (message.getType()) {
-                case ProtocolUtil.NEW_TRANSACTION -> handleNewTransaction(node, message);
-                case ProtocolUtil.NEW_BLOCK -> handleNewBlock(node, message);
-                case ProtocolUtil.REQUEST_CHAIN -> handleRequestChain(node, message);
-                case ProtocolUtil.RESPONSE_CHAIN -> handleResponseChain(node, message);
-                default -> log.warn("Tipo de mensagem desconhecido: {}", message.getType());
-            }
-
             if (message.getSender() != null) {
                 String[] parts = message.getSender().split(":");
                 String host = parts[0];
                 int port = Integer.parseInt(parts[1]);
 
                 node.addPeer(host, port);
+            }
+
+            switch (message.getType()) {
+                case ProtocolUtil.NEW_TRANSACTION -> handleNewTransaction(node, message);
+                case ProtocolUtil.NEW_BLOCK -> handleNewBlock(node, message);
+                case ProtocolUtil.REQUEST_CHAIN -> handleRequestChain(node, message);
+                case ProtocolUtil.RESPONSE_CHAIN -> handleResponseChain(node, message);
+                default -> log.warn("Tipo de mensagem desconhecido: {}", message.getType());
             }
         } catch (NumberFormatException ex) {
             log.error("Porta inválida no remetente: " + message.getSender(), ex);
@@ -63,6 +63,9 @@ public class MessageHandler {
         if (added) {
             log.info("✓ Bloco recebido e adicionado: {}", block.getHash());
         } else {
+            MessagePojo requestChain = MessageFactory.buildRequestChain(node.getHost(), node.getPort());
+            NetworkClient.broadcast(node.getPeers(), requestChain);
+
             log.warn("✗ Bloco recebido rejeitado");
         }
     }

@@ -6,6 +6,7 @@ import java.util.List;
 import com.blockchain.pojos.BlockPojo;
 import com.blockchain.pojos.BlockchainPojo;
 import com.blockchain.pojos.TransactionPojo;
+import com.blockchain.utils.ProtocolUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -70,7 +71,7 @@ public class BlockchainHelper {
         }
 
         // Verifica se o bloco é válido (PoW)
-        if (!block.isValid(blockchainPojo.getDifficulty())) {
+        if (!block.getHash().startsWith(ProtocolUtil.DIFFICULTY)) {
             log.warn("Bloco inválido - PoW falhou");
             return false;
         }
@@ -105,7 +106,7 @@ public class BlockchainHelper {
 
     /**
      * Verifica se toda a blockchain é válida
-     * Conforme especificação: cadeia válida possui todos os blocos válidos
+     * Equivalente ao is_chain_valid do Python
      */
     public static boolean isChainValid(BlockchainPojo blockchainPojo) {
         List<BlockPojo> chain = blockchainPojo.getChain();
@@ -115,15 +116,23 @@ public class BlockchainHelper {
             BlockPojo currentBlock = chain.get(i);
             BlockPojo previousBlock = chain.get(i - 1);
 
-            // Verifica se o hash do bloco é válido
-            if (!currentBlock.isValid(difficulty)) {
-                log.warn("Bloco {} inválido", i);
+            // Verifica: current.hash != current.calculate_hash()
+            String calculatedHash = BlockHelper.calculateHash(currentBlock);
+            if (!currentBlock.getHash().equals(calculatedHash)) {
+                log.warn("Bloco {} tem hash inválido (calculado: {}, armazenado: {})", 
+                         i, calculatedHash, currentBlock.getHash());
                 return false;
             }
 
-            // Verifica se aponta para o bloco anterior correto
+            // Verifica: current.previous_hash != previous.hash
             if (!currentBlock.getPreviousHash().equals(previousBlock.getHash())) {
                 log.warn("Bloco {} não aponta para o anterior", i);
+                return false;
+            }
+
+            // Verifica: not current.hash.startswith(DIFFICULTY)
+            if (!currentBlock.getHash().startsWith(difficulty)) {
+                log.warn("Bloco {} não começa com dificuldade {}", i, difficulty);
                 return false;
             }
         }

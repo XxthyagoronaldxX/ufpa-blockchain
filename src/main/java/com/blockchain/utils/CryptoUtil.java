@@ -27,13 +27,9 @@ public class CryptoUtil {
      * Converte bytes para string hexadecimal
      */
     private static String bytesToHex(byte[] bytes) {
-        StringBuilder hexString = new StringBuilder();
+        StringBuilder hexString = new StringBuilder(bytes.length * 2);
         for (byte b : bytes) {
-            String hex = Integer.toHexString(0xff & b);
-            if (hex.length() == 1) {
-                hexString.append('0');
-            }
-            hexString.append(hex);
+            hexString.append(String.format("%02x", b));
         }
         return hexString.toString();
     }

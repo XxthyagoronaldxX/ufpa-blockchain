@@ -1,9 +1,7 @@
 package com.blockchain.helpers;
 
-import java.util.List;
 import java.util.Map;
 
-import com.blockchain.factories.BlockFactory;
 import com.blockchain.factories.TransactionFactory;
 import com.blockchain.pojos.BlockPojo;
 import com.blockchain.pojos.BlockchainPojo;

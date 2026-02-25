@@ -20,14 +20,14 @@ public class TransactionPojo {
 
     private double valor; // Valor da transação
 
-    private long timestamp; // Timestamp da transação
+    private double timestamp; // Timestamp da transação (segundos, compatível com Python)
 
     public TransactionPojo(String origem, String destino, double valor) {
         this.id = UUID.randomUUID().toString();
         this.origem = origem;
         this.destino = destino;
         this.valor = valor;
-        this.timestamp = System.currentTimeMillis();
+        this.timestamp = System.currentTimeMillis() / 1000.0; // Converte ms para segundos
 
         // Validação: somente valores positivos
         if (valor <= 0) {

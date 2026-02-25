@@ -17,7 +17,7 @@ public class MessagePojo {
 
     private Object payload;
 
-    private long timestamp;
+    private double timestamp;
 
     private String sender;
 }
