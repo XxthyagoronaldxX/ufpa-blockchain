@@ -15,7 +15,7 @@ public class MessagePojo {
 
     private String type;
 
-    private Object payload;
+    private PayloadPojo payload;
 
     private double timestamp;
 

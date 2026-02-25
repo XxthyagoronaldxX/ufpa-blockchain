@@ -49,12 +49,10 @@ public class BlockHelper {
     }
 
     public static void mineBlock(BlockPojo block, String difficulty) {
-        String target = new String(new char[difficulty.length()]).replace('\0', '0');
-
         // Calculate initial hash before checking
         String hash = calculateHash(block);
 
-        while (!hash.substring(0, difficulty.length()).equals(target)) {
+        while (!hash.startsWith(difficulty)) {
             block.setNonce(block.getNonce() + 1);
             hash = calculateHash(block);
         }

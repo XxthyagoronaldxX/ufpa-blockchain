@@ -7,6 +7,7 @@ import com.blockchain.factories.BlockFactory;
 import com.blockchain.helpers.BlockHelper;
 import com.blockchain.helpers.BlockchainHelper;
 import com.blockchain.utils.ProtocolUtil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -94,6 +95,7 @@ public class BlockchainPojo {
         return newBlock;
     }
 
+    @JsonIgnore
     public BlockPojo getLatestBlock() {
         return chain.get(chain.size() - 1);
     }
@@ -106,6 +108,7 @@ public class BlockchainPojo {
         chain.add(block);
     }
 
+    @JsonIgnore
     public int getChainLength() {
         return chain.size();
     }

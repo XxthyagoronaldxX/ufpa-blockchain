@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import com.blockchain.pojos.BlockPojo;
 import com.blockchain.pojos.BlockchainPojo;
 import com.blockchain.pojos.MessagePojo;
+import com.blockchain.pojos.PayloadPojo;
 import com.blockchain.pojos.TransactionPojo;
 import com.blockchain.utils.ProtocolUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,9 +21,13 @@ public class MessageFactory {
     public static MessagePojo buildNewTransaction(TransactionPojo transaction, String senderHost, Integer senderPort) {
         String sender = senderHost + ":" + senderPort;
 
+        PayloadPojo payload = PayloadPojo.builder()
+            .transaction(transaction)
+            .build();
+
         return MessagePojo.builder()
                 .type(ProtocolUtil.NEW_TRANSACTION)
-                .payload(transaction)
+                .payload(payload)
                 .sender(sender)
                 .timestamp(System.currentTimeMillis() / 1000.0)
                 .build();
@@ -34,9 +39,13 @@ public class MessageFactory {
     public static MessagePojo buildNewBlock(BlockPojo block, String senderHost, Integer senderPort) {
         String sender = senderHost + ":" + senderPort;
 
+        PayloadPojo payload = PayloadPojo.builder()
+            .block(block)
+            .build();
+
         return MessagePojo.builder()
                 .type(ProtocolUtil.NEW_BLOCK)
-                .payload(block)
+                .payload(payload)
                 .sender(sender)
                 .timestamp(System.currentTimeMillis() / 1000.0)
                 .build();
@@ -62,9 +71,13 @@ public class MessageFactory {
     public static MessagePojo buildResponseChain(BlockchainPojo blockchain, String senderHost, Integer senderPort) {
         String sender = senderHost + ":" + senderPort;
 
+        PayloadPojo payload = PayloadPojo.builder()
+            .blockchain(blockchain)
+            .build();
+
         return MessagePojo.builder()
                 .type(ProtocolUtil.RESPONSE_CHAIN)
-                .payload(blockchain)
+                .payload(payload)
                 .sender(sender)
                 .timestamp(System.currentTimeMillis() / 1000.0)
                 .build();

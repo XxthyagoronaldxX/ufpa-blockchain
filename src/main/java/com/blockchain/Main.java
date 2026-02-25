@@ -128,14 +128,15 @@ public class Main {
     }
 
     private static void mineBlock(NodePojo node) {
-        int pendingCount = node.getBlockchain().getPendingTransactions().size();
+        BlockchainPojo blockchain = node.getBlockchain();
+        int pendingCount = blockchain.getPendingTransactions().size();
 
         if (pendingCount == 0) {
             log.info("Nenhuma transação pendente!");
             return;
         }
 
-        BlockPojo newBlock = node.getBlockchain().minePendingTransactions();
+        BlockPojo newBlock = blockchain.minePendingTransactions();
 
         // Broadcast do bloco minerado
         MessagePojo message = MessageFactory.buildNewBlock(newBlock, node.getHost(), node.getPort());
