@@ -30,13 +30,17 @@ public class MessageHandler {
                 default -> log.warn("Tipo de mensagem desconhecido: {}", message.getType());
             }
 
-            // Adiciona o remetente aos peers conhecidos
-            if (message.getSenderHost() != null && message.getSenderPort() != null) {
-                node.addPeer(message.getSenderHost(), message.getSenderPort());
-            }
+            if (message.getSender() != null) {
+                String[] parts = message.getSender().split(":");
+                String host = parts[0];
+                int port = Integer.parseInt(parts[1]);
 
-        } catch (Exception e) {
-            log.error("Erro ao processar mensagem: " + e.getMessage(), e);
+                node.addPeer(host, port);
+            }
+        } catch (NumberFormatException ex) {
+            log.error("Porta inválida no remetente: " + message.getSender(), ex);
+        } catch (Exception ex) {
+            log.error("Erro ao processar mensagem: " + ex.getMessage(), ex);
         }
     }
 
@@ -70,11 +74,15 @@ public class MessageHandler {
         log.debug("Requisição de chain recebida");
 
         // Envia a chain de volta
-        if (message.getSenderHost() != null && message.getSenderPort() != null) {
+        if (message.getSender() != null) {
+            String[] parts = message.getSender().split(":");
+            String host = parts[0];
+            int port = Integer.parseInt(parts[1]);
+
             MessagePojo response = MessageFactory.buildResponseChain(node.getBlockchain(), node.getHost(),
                     node.getPort());
 
-            NetworkClient.sendToPeer(message.getSenderHost(), message.getSenderPort(), response);
+            NetworkClient.sendToPeer(host, port, response);
         } else {
             log.warn("Requisição de chain sem remetente válido");
         }

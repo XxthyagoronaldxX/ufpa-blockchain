@@ -21,30 +21,30 @@ public class BlockchainHelper {
      * - Não permitir saldo negativo em nenhuma hipótese
      */
     public static void addTransaction(BlockchainPojo blockchainPojo, TransactionPojo transaction) {
-        if (transaction.getSender() == null || transaction.getRecipient() == null) {
+        if (transaction.getOrigem() == null || transaction.getDestino() == null) {
             throw new IllegalArgumentException("Transação deve ter remetente e destinatário");
         }
 
-        if (transaction.getAmount() <= 0) {
+        if (transaction.getValor() <= 0) {
             throw new IllegalArgumentException("Valor da transação deve ser positivo");
         }
 
         // REGRA CRÍTICA: Não permitir saldo negativo em nenhuma hipótese
         // Calcula o saldo após aplicar todas as transações pendentes
-        double currentBalance = blockchainPojo.getBalance(transaction.getSender());
+        double currentBalance = blockchainPojo.getBalance(transaction.getOrigem());
 
         // Subtrai as transações pendentes do mesmo sender
         for (TransactionPojo pending : blockchainPojo.getPendingTransactions()) {
-            if (pending.getSender().equals(transaction.getSender())) {
-                currentBalance -= pending.getAmount();
+            if (pending.getOrigem().equals(transaction.getOrigem())) {
+                currentBalance -= pending.getValor();
             }
         }
 
         // Verifica se haverá saldo suficiente
-        if (currentBalance - transaction.getAmount() < 0) {
+        if (currentBalance - transaction.getValor() < 0) {
             throw new IllegalArgumentException(
                     String.format("Saldo insuficiente! Saldo atual: %.2f, Tentando enviar: %.2f",
-                            currentBalance, transaction.getAmount()));
+                            currentBalance, transaction.getValor()));
         }
 
         blockchainPojo.addTransaction(transaction);

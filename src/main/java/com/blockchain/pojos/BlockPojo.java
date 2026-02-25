@@ -10,25 +10,27 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
 public class BlockPojo {
-    private final int index;
+    private int index;
 
-    private final long timestamp;
+    private long timestamp;
 
-    private final List<TransactionPojo> transactions;
+    private List<TransactionPojo> transactions;
 
     private String hash;
 
     private int nonce;
 
     @JsonProperty("previous_hash")
-    private final String previousHash;
+    private String previousHash;
 
     public BlockPojo(int index, List<TransactionPojo> transactions, String previousHash) {
         this.index = index;
@@ -41,7 +43,7 @@ public class BlockPojo {
 
     public String getTransactionsToString() {
         return transactions.stream()
-                .map(t -> t.getSender() + t.getRecipient() + t.getAmount() + t.getTimestamp())
+                .map(t -> t.getOrigem() + t.getDestino() + t.getValor() + t.getTimestamp())
                 .collect(Collectors.joining());
     }
 

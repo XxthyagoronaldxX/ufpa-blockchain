@@ -18,11 +18,12 @@ public class MessageFactory {
      * Cria uma mensagem de nova transação
      */
     public static MessagePojo buildNewTransaction(TransactionPojo transaction, String senderHost, Integer senderPort) {
+        String sender = senderHost + ":" + senderPort;
+
         return MessagePojo.builder()
                 .type(ProtocolUtil.NEW_TRANSACTION)
-                .data(transaction)
-                .senderHost(senderHost)
-                .senderPort(senderPort)
+                .payload(transaction)
+                .sender(sender)
                 .timestamp(System.currentTimeMillis())
                 .build();
     }
@@ -31,11 +32,12 @@ public class MessageFactory {
      * Cria uma mensagem de novo bloco
      */
     public static MessagePojo buildNewBlock(BlockPojo block, String senderHost, Integer senderPort) {
+        String sender = senderHost + ":" + senderPort;
+
         return MessagePojo.builder()
                 .type(ProtocolUtil.NEW_BLOCK)
-                .data(block)
-                .senderHost(senderHost)
-                .senderPort(senderPort)
+                .payload(block)
+                .sender(sender)
                 .timestamp(System.currentTimeMillis())
                 .build();
     }
@@ -44,11 +46,12 @@ public class MessageFactory {
      * Cria uma mensagem de requisição de chain
      */
     public static MessagePojo buildRequestChain(String senderHost, Integer senderPort) {
+        String sender = senderHost + ":" + senderPort;
+
         return MessagePojo.builder()
                 .type(ProtocolUtil.REQUEST_CHAIN)
-                .data(null)
-                .senderHost(senderHost)
-                .senderPort(senderPort)
+                .payload(null)
+                .sender(sender)
                 .timestamp(System.currentTimeMillis())
                 .build();
     }
@@ -57,11 +60,12 @@ public class MessageFactory {
      * Cria uma mensagem de resposta com a chain completa
      */
     public static MessagePojo buildResponseChain(BlockchainPojo blockchain, String senderHost, Integer senderPort) {
+        String sender = senderHost + ":" + senderPort;
+
         return MessagePojo.builder()
                 .type(ProtocolUtil.RESPONSE_CHAIN)
-                .data(blockchain.getChain())
-                .senderHost(senderHost)
-                .senderPort(senderPort)
+                .payload(blockchain)
+                .sender(sender)
                 .timestamp(System.currentTimeMillis())
                 .build();
     }

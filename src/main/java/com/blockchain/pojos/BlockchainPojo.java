@@ -6,6 +6,7 @@ import java.util.List;
 import com.blockchain.helpers.BlockHelper;
 import com.blockchain.helpers.BlockchainHelper;
 import com.blockchain.utils.ProtocolUtil;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 @Slf4j
 public class BlockchainPojo {
+    @JsonProperty("pending_transactions")
     private List<TransactionPojo> pendingTransactions;
 
     private List<BlockPojo> chain;
@@ -121,11 +123,11 @@ public class BlockchainPojo {
 
         for (BlockPojo block : chain) {
             for (TransactionPojo tx : block.getTransactions()) {
-                if (tx.getRecipient().equals(address)) {
-                    balance += tx.getAmount();
+                if (tx.getDestino().equals(address)) {
+                    balance += tx.getValor();
                 }
-                if (tx.getSender().equals(address)) {
-                    balance -= tx.getAmount();
+                if (tx.getOrigem().equals(address)) {
+                    balance -= tx.getValor();
                 }
             }
         }

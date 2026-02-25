@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -78,24 +77,50 @@ public class NetworkServer {
 
     /**
      * Manipula uma conexão recebida
+     * Formato: [4 bytes tamanho big-endian] + [JSON UTF-8]
      */
     private void handleConnection(Socket socket) {
         try (socket) {
             InputStream input = socket.getInputStream();
-            byte[] buffer = new byte[ProtocolUtil.BUFFER_SIZE];
-            int bytesRead = input.read(buffer);
 
-            if (bytesRead > 0) {
-                byte[] messageBytes = Arrays.copyOf(buffer, bytesRead);
-                MessagePojo message = MessageFactory.fromJson(messageBytes);
+            // Lê os 4 primeiros bytes (tamanho da mensagem em big-endian)
+            byte[] lengthBytes = new byte[4];
+            int bytesRead = input.read(lengthBytes);
 
-                log.debug("Mensagem recebida: {}", message);
-                MessageHandler.handleMessage(node, message);
+            if (bytesRead != 4) {
+                log.warn("Conexão fechada ou cabeçalho incompleto");
+                return;
             }
+
+            // Converte big-endian ('>I') para int
+            int messageLength = ((lengthBytes[0] & 0xFF) << 24) |
+                    ((lengthBytes[1] & 0xFF) << 16) |
+                    ((lengthBytes[2] & 0xFF) << 8) |
+                    (lengthBytes[3] & 0xFF);
+
+            if (messageLength <= 0 || messageLength > ProtocolUtil.BUFFER_SIZE) {
+                log.error("Tamanho de mensagem inválido: {}", messageLength);
+                return;
+            }
+
+            // Lê exatamente messageLength bytes
+            byte[] messageBytes = new byte[messageLength];
+            int totalRead = 0;
+            while (totalRead < messageLength) {
+                int read = input.read(messageBytes, totalRead, messageLength - totalRead);
+                if (read == -1) {
+                    log.error("Conexão fechada antes de ler mensagem completa");
+                    return;
+                }
+                totalRead += read;
+            }
+
+            MessagePojo message = MessageFactory.fromJson(messageBytes);
+            log.debug("Mensagem recebida: {} ({} bytes)", message.getType(), messageLength);
+            MessageHandler.handleMessage(node, message);
         } catch (IOException ex) {
             log.error("Erro ao manipular conexão: {}", ex.getMessage());
         }
     }
 
-    
 }

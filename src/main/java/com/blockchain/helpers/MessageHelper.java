@@ -8,6 +8,7 @@ import com.blockchain.factories.TransactionFactory;
 import com.blockchain.pojos.BlockPojo;
 import com.blockchain.pojos.BlockchainPojo;
 import com.blockchain.pojos.MessagePojo;
+import com.blockchain.pojos.PayloadPojo;
 import com.blockchain.pojos.TransactionPojo;
 import com.blockchain.utils.ProtocolUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -33,7 +34,7 @@ public class MessageHelper {
             throw new IllegalStateException("Tipo de mensagem não é NEW_TRANSACTION");
         }
 
-        Map<String, Object> map = mapper.convertValue(message.getData(), new TypeReference<Map<String, Object>>() {
+        Map<String, Object> map = mapper.convertValue(message.getPayload(), new TypeReference<Map<String, Object>>() {
         });
 
         return TransactionFactory.fromMap(map);
@@ -44,10 +45,9 @@ public class MessageHelper {
             throw new IllegalStateException("Tipo de mensagem não é NEW_BLOCK");
         }
 
-        Map<String, Object> map = mapper.convertValue(message.getData(), new TypeReference<Map<String, Object>>() {
-        });
+        PayloadPojo payloadPojo = mapper.convertValue(message.getPayload(), PayloadPojo.class);
 
-        return BlockFactory.fromMap(map);
+        return payloadPojo.getBlock();
     }
 
     public static BlockchainPojo getBlockchain(MessagePojo message) {
@@ -55,12 +55,8 @@ public class MessageHelper {
             throw new IllegalStateException("Tipo de mensagem não é RESPONSE_CHAIN");
         }
 
-        List<BlockPojo> chain = mapper.convertValue(message.getData(), new TypeReference<List<BlockPojo>>() {
-        });
+        PayloadPojo payloadPojo = mapper.convertValue(message.getPayload(), PayloadPojo.class);
 
-        BlockchainPojo blockchainPojo = new BlockchainPojo();
-        blockchainPojo.setChain(chain);
-
-        return blockchainPojo;
+        return payloadPojo.getBlockchain();
     }
 }

@@ -29,6 +29,7 @@ public class NetworkClient {
 
     /**
      * Envia uma mensagem para um peer específico
+     * Formato: [4 bytes tamanho big-endian] + [JSON UTF-8]
      */
     public static void sendToPeer(String peerHost, int peerPort, MessagePojo message) {
         executorService.submit(() -> {
@@ -37,10 +38,24 @@ public class NetworkClient {
                 socket.setSoTimeout(5000);
 
                 OutputStream output = socket.getOutputStream();
-                output.write(MessageHelper.toJson(message));
+                
+                // Serializa mensagem para JSON
+                byte[] messageBytes = MessageHelper.toJson(message);
+                int messageLength = messageBytes.length;
+                
+                // Prepara 4 bytes de tamanho (big-endian, '>I')
+                byte[] lengthBytes = new byte[4];
+                lengthBytes[0] = (byte) ((messageLength >> 24) & 0xFF);
+                lengthBytes[1] = (byte) ((messageLength >> 16) & 0xFF);
+                lengthBytes[2] = (byte) ((messageLength >> 8) & 0xFF);
+                lengthBytes[3] = (byte) (messageLength & 0xFF);
+                
+                // Envia: tamanho (4 bytes) + mensagem
+                output.write(lengthBytes);
+                output.write(messageBytes);
                 output.flush();
 
-                log.debug("Mensagem enviada para {}:{}", peerHost, peerPort);
+                log.debug("Mensagem enviada para {}:{} ({} bytes)", peerHost, peerPort, messageLength);
             } catch (ConnectException e) {
                 log.warn("Peer {}:{} não está disponível. [{}]", peerHost, peerPort, e.getMessage());
             } catch (SocketTimeoutException e) {
