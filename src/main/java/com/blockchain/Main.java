@@ -21,7 +21,7 @@ public class Main {
     private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        String host = "localhost";
+        String host = "10.199.197.157";
         int port = 5000;
 
         printHeader();
@@ -106,7 +106,6 @@ public class Main {
         log.info("║ 6. Listar peers                    ║");
         log.info("║ 7. Validar chain                   ║");
         log.info("║ 8. Informações do nó               ║");
-        log.info("║ 9. Criar funding (teste)           ║");
         log.info("║ 0. Sair                            ║");
         log.info("╚════════════════════════════════════╝");
         log.info("Escolha uma opção: ");
@@ -132,11 +131,12 @@ public class Main {
         int pendingCount = blockchain.getPendingTransactions().size();
 
         if (pendingCount == 0) {
-            log.info("Nenhuma transação pendente!");
-            return;
+            log.info("Minerando bloco vazio com recompensa coinbase...");
+        } else {
+            log.info("Minerando bloco com {} transação(ões) pendente(s)...", pendingCount);
         }
 
-        BlockPojo newBlock = blockchain.minePendingTransactions();
+        BlockPojo newBlock = blockchain.minePendingTransactions(node.getHost() + ":" + node.getPort());
 
         // Broadcast do bloco minerado
         MessagePojo message = MessageFactory.buildNewBlock(newBlock, node.getHost(), node.getPort());

@@ -69,17 +69,21 @@ public class BlockchainPojo {
 
     /**
      * Minera um novo bloco com as transações pendentes
-     * SEM recompensa de mineração (não especificada no trabalho)
+     * COM recompensa de mineração (coinbase = 50)
      */
-    public BlockPojo minePendingTransactions() {
-        if (pendingTransactions.isEmpty()) {
-            throw new IllegalStateException("Não há transações pendentes para minerar");
-        }
+    public BlockPojo minePendingTransactions(String minerAddress) {
+        // Cria transação coinbase (recompensa do minerador)
+        TransactionPojo coinbase = new TransactionPojo("COINBASE", minerAddress, 50.0);
+        
+        // Adiciona coinbase às transações do bloco
+        List<TransactionPojo> blockTransactions = new ArrayList<>();
+        blockTransactions.add(coinbase);
+        blockTransactions.addAll(pendingTransactions);
 
-        // Cria novo bloco com transações pendentes
+        // Cria novo bloco com transações pendentes + coinbase
         BlockPojo newBlock = new BlockPojo(
                 chain.size(),
-                new ArrayList<>(pendingTransactions),
+                blockTransactions,
                 getLatestBlock().getHash());
 
         // Minera o bloco (Proof of Work)
@@ -91,6 +95,8 @@ public class BlockchainPojo {
 
         // Limpa transações pendentes
         pendingTransactions.clear();
+
+        log.info("✓ Minerador {} recebeu recompensa de 50", minerAddress);
 
         return newBlock;
     }
